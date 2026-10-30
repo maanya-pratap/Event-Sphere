@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+{% block title %}Browse events — EventSphere{% endblock %}
+{% block extra_css %}<link rel="stylesheet" href="{{ url_for('static', filename='css/dashboard.css') }}">{% endblock %}
+
+{% block content %}
+<div class="dash-shell">
+  {% include "participant/_sidebar.html" %}
+  <main class="dash-main">
+    <div class="dash-header">
+      <div><h1>Browse events</h1><p>Find something worth showing up for.</p></div>
+      <form method="GET" style="display:flex; gap:10px;">
+        <input type="search" name="q" value="{{ q }}" placeholder="Search events…" style="width:240px;">
+        <button class="btn btn-ghost" type="submit">Search</button>
+      </form>
+    </div>
+
+    {% if events %}
+    <div class="event-grid" style="padding-bottom:0;">
+      {% for event in events %}
+      <div class="event-card">
+        <div class="event-banner"><span class="category-chip">{{ event.category }}</span></div>
+        <div class="event-body">
+          <h3>{{ event.title }}</h3>
+          <div class="event-meta">
+            <span>📅 {{ event.start_time.strftime('%d %b, %I:%M %p') }}</span>
+            <span>📍 {{ event.venue or "TBA" }}</span>
+            <span>🎟️ {{ event.seats_left }} seats left</span>
+          </div>
+          <a href="{{ url_for('participant.event_details', event_id=event.id) }}" class="btn btn-primary btn-block btn-sm">View & register</a>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+    {% else %}
+    <div class="empty-state">No events match yet — try a different search, or check back soon.</div>
+    {% endif %}
+  </main>
+</div>
+{% endblock %}

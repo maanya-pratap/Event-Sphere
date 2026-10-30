@@ -1,0 +1,61 @@
+{% extends "base.html" %}
+{% block title %}Dashboard — EventSphere{% endblock %}
+{% block extra_css %}<link rel="stylesheet" href="{{ url_for('static', filename='css/dashboard.css') }}">{% endblock %}
+
+{% block content %}
+<div class="dash-shell">
+  {% include "participant/_sidebar.html" %}
+
+  <main class="dash-main">
+    <div class="dash-header">
+      <div>
+        <h1>Hey {{ current_user.name.split(' ')[0] }} 👋</h1>
+        <p>You're registered for {{ my_regs|length }} event{{ 's' if my_regs|length != 1 else '' }}.</p>
+      </div>
+      <a href="{{ url_for('participant.events') }}" class="btn btn-primary">Browse events</a>
+    </div>
+
+    <div class="stat-row">
+      <div class="stat-card">
+        <strong>{{ my_regs|length }}</strong>
+        <span>Registrations</span>
+      </div>
+      <div class="stat-card mint">
+        <strong>{{ my_regs|selectattr('attendance')|selectattr('attendance.present')|list|length }}</strong>
+        <span>Events attended</span>
+      </div>
+      <div class="stat-card coral">
+        <strong>{{ my_regs|selectattr('certificate')|list|length }}</strong>
+        <span>Certificates earned</span>
+      </div>
+      <div class="stat-card gold">
+        <strong>{{ upcoming|length }}</strong>
+        <span>Upcoming near you</span>
+      </div>
+    </div>
+
+    <div class="panel">
+      <h2>Upcoming events</h2>
+      {% if upcoming %}
+      <div class="event-grid" style="padding-bottom:0;">
+        {% for event in upcoming %}
+        <div class="event-card">
+          <div class="event-banner"><span class="category-chip">{{ event.category }}</span></div>
+          <div class="event-body">
+            <h3>{{ event.title }}</h3>
+            <div class="event-meta">
+              <span>📅 {{ event.start_time.strftime('%d %b, %I:%M %p') }}</span>
+              <span>📍 {{ event.venue or "TBA" }}</span>
+            </div>
+            <a href="{{ url_for('participant.event_details', event_id=event.id) }}" class="btn btn-primary btn-block btn-sm">View</a>
+          </div>
+        </div>
+        {% endfor %}
+      </div>
+      {% else %}
+      <div class="empty-state">No upcoming events right now — check the full list.</div>
+      {% endif %}
+    </div>
+  </main>
+</div>
+{% endblock %}

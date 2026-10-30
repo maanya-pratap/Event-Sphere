@@ -1,0 +1,10 @@
+{% extends "base.html" %}
+{% block title %}Access denied — EventSphere{% endblock %}
+{% block content %}
+<div class="container" style="padding:100px 24px; text-align:center;">
+  <div class="hero-kicker">403</div>
+  <h1>You don't have access to that.</h1>
+  <p class="lede" style="margin:0 auto 28px;">This area is restricted to a different account type. If you think that's a mistake, log in with the right account.</p>
+  <a href="{{ url_for('main.landing') }}" class="btn btn-primary">Back to home</a>
+</div>
+{% endblock %}

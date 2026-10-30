@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+{% block title %}Log in — EventSphere{% endblock %}
+{% block extra_css %}<link rel="stylesheet" href="{{ url_for('static', filename='css/auth.css') }}">{% endblock %}
+
+{% block content %}
+<div class="auth-shell">
+  <div class="auth-visual">
+    <h2>Welcome back to campus life.</h2>
+    <p>Pick up right where you left off — your passes, your certificates, your events.</p>
+    <div class="auth-quote">
+      <p style="margin:0;">"Setting up attendance for our fest used to take a whole evening. Now it's a QR scan."</p>
+    </div>
+  </div>
+
+  <div class="auth-form-side">
+    <div class="auth-card">
+      <h1>Log in</h1>
+      <p class="sub">New here? <a href="{{ url_for('auth.register') }}">Create an account</a> instead.</p>
+
+      <form method="POST">
+        <div class="form-group">
+          <label for="email">Email</label>
+          <input type="email" id="email" name="email" required autofocus>
+        </div>
+        <div class="form-group">
+          <label for="password">Password</label>
+          <input type="password" id="password" name="password" required>
+        </div>
+        <div class="remember-row">
+          <label style="display:flex; align-items:center; gap:8px; margin:0;">
+            <input type="checkbox" name="remember" style="width:auto;"> Remember me
+          </label>
+          <a href="{{ url_for('auth.forgot_password') }}">Forgot password?</a>
+        </div>
+        <button type="submit" class="btn btn-primary btn-block">Log in</button>
+      </form>
+      {% if unverified_email %}
+      <form method="POST" action="{{ url_for('auth.resend_verification') }}" style="margin-top:1rem">
+        <input type="hidden" name="email" value="{{ unverified_email }}">
+        <button type="submit" class="btn btn-block">Resend verification email</button>
+      </form>
+      {% endif %}
+
+      <div class="auth-foot">Organiser account pending approval? Your admin will confirm it shortly.</div>
+    </div>
+  </div>
+</div>
+{% endblock %}

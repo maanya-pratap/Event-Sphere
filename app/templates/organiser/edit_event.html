@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+{% block title %}Edit event — EventSphere{% endblock %}
+{% block extra_css %}<link rel="stylesheet" href="{{ url_for('static', filename='css/dashboard.css') }}">{% endblock %}
+
+{% block content %}
+<div class="dash-shell">
+  {% include "organiser/_sidebar.html" %}
+  <main class="dash-main">
+    <div class="panel" style="max-width:620px;">
+      <h1>Edit "{{ event.title }}"</h1>
+      <form method="POST">
+        <div class="form-group">
+          <label for="title">Event title</label>
+          <input type="text" id="title" name="title" value="{{ event.title }}" required>
+        </div>
+        <div class="form-group">
+          <label for="description">Description</label>
+          <textarea id="description" name="description" rows="4">{{ event.description or '' }}</textarea>
+        </div>
+        <div class="field-row">
+          <div class="form-group">
+            <label for="category">Category</label>
+            <input type="text" id="category" name="category" value="{{ event.category }}">
+          </div>
+          <div class="form-group">
+            <label for="venue">Venue</label>
+            <input type="text" id="venue" name="venue" value="{{ event.venue or '' }}">
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="start_time">Starts</label>
+          <input type="datetime-local" id="start_time" name="start_time" value="{{ event.start_time.strftime('%Y-%m-%dT%H:%M') }}">
+        </div>
+        <button type="submit" class="btn btn-primary btn-block">Save changes</button>
+      </form>
+    </div>
+  </main>
+</div>
+{% endblock %}

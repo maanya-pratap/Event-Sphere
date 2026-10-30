@@ -1,0 +1,9 @@
+<aside class="sidebar">
+  <div class="role-tag">Organiser</div>
+  <a href="{{ url_for('organiser.dashboard') }}" class="{{ 'active' if request.endpoint == 'organiser.dashboard' }}">🏠 Dashboard</a>
+  <a href="{{ url_for('organiser.create_event') }}" class="{{ 'active' if request.endpoint == 'organiser.create_event' }}">➕ New event</a>
+  <a href="{{ url_for('organiser.gallery') }}" class="{{ 'active' if request.endpoint == 'organiser.gallery' }}">🖼️ Gallery</a>
+  <a href="{{ url_for('organiser.analytics') }}" class="{{ 'active' if request.endpoint == 'organiser.analytics' }}">📊 Analytics</a>
+  <a href="{{ url_for('organiser.profile') }}" class="{{ 'active' if request.endpoint == 'organiser.profile' }}">👤 Profile</a>
+  <a href="{{ url_for('auth.logout') }}" class="logout-link">↩ Log out</a>
+</aside>

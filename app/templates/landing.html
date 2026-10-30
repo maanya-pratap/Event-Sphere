@@ -1,0 +1,92 @@
+{% extends "base.html" %}
+{% block title %}EventSphere — Campus events, sorted{% endblock %}
+
+{% block content %}
+<section class="container hero">
+  <div>
+    <div class="hero-kicker">For college societies & the people who show up</div>
+    <h1>Every campus event, one QR pass away.</h1>
+    <p class="lede">Create events, collect registrations, scan attendees in with a phone camera, and hand out certificates automatically — no spreadsheets, no paper sign-in sheets.</p>
+    <div class="hero-actions">
+      <a href="{{ url_for('auth.register') }}" class="btn btn-primary">Create your account</a>
+      <a href="#how-it-works" class="btn btn-ghost">See how it works</a>
+    </div>
+    <div class="hero-stats">
+      <div><strong>{{ events|length if events else 0 }}+</strong><span>events live now</span></div>
+      <div><strong>3</strong><span>roles, one platform</span></div>
+      <div><strong>&lt;5s</strong><span>to check someone in</span></div>
+    </div>
+  </div>
+
+  <div class="hero-visual">
+    <div class="pass-card">
+      <span class="pass-pill">CONFIRMED</span>
+      <div>
+        <h3 style="margin-bottom:2px;">Hacknight 6.0</h3>
+        <p style="margin:0; font-size:0.85rem;">Sat, 7:00 PM · Auditorium</p>
+      </div>
+      <div class="qr-block"></div>
+    </div>
+  </div>
+</section>
+
+<section class="container" id="how-it-works">
+  <div class="section-head">
+    <h2>Built for how events actually run</h2>
+  </div>
+  <div class="feature-grid">
+    <div class="feature-card">
+      <div class="icon-tag">📇</div>
+      <h3>Register in seconds</h3>
+      <p>Participants browse events and register with one tap — no forms to print or collect.</p>
+    </div>
+    <div class="feature-card">
+      <div class="icon-tag">📱</div>
+      <h3>QR passes, built in</h3>
+      <p>Every registration generates a unique QR pass that lives on the participant's phone.</p>
+    </div>
+    <div class="feature-card">
+      <div class="icon-tag">🎯</div>
+      <h3>Scan-to-attend</h3>
+      <p>Organisers check people in with an in-browser camera scanner — no extra app to install.</p>
+    </div>
+    <div class="feature-card">
+      <div class="icon-tag">📜</div>
+      <h3>Instant certificates</h3>
+      <p>Marked-present attendees get a downloadable PDF certificate the moment they're scanned.</p>
+    </div>
+  </div>
+</section>
+
+<section class="container">
+  <div class="section-head">
+    <h2>Upcoming events</h2>
+    <a href="{{ url_for('auth.login') }}" class="btn btn-ghost btn-sm">Log in to register</a>
+  </div>
+
+  {% if events %}
+  <div class="event-grid">
+    {% for event in events %}
+    <div class="event-card">
+      <div class="event-banner">
+        <span class="category-chip">{{ event.category }}</span>
+      </div>
+      <div class="event-body">
+        <h3>{{ event.title }}</h3>
+        <div class="event-meta">
+          <span>📅 {{ event.start_time.strftime('%d %b, %I:%M %p') }}</span>
+          <span>📍 {{ event.venue or "TBA" }}</span>
+          <span>🎟️ {{ event.seats_left }} seats left</span>
+        </div>
+        <a href="{{ url_for('auth.login') }}" class="btn btn-primary btn-block btn-sm">View & register</a>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+  {% else %}
+  <div class="empty-state">
+    <p>No events published yet — check back soon, or sign up as a society to create the first one.</p>
+  </div>
+  {% endif %}
+</section>
+{% endblock %}

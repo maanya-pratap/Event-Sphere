@@ -1,0 +1,65 @@
+{% extends "base.html" %}
+{% block title %}Platform analytics — EventSphere Admin{% endblock %}
+{% block extra_css %}<link rel="stylesheet" href="{{ url_for('static', filename='css/dashboard.css') }}">{% endblock %}
+
+{% block content %}
+<div class="dash-shell">
+  {% include "admin/_sidebar.html" %}
+  <main class="dash-main">
+    <div class="dash-header">
+      <div>
+        <h1>Platform analytics</h1>
+        <p>How EventSphere is being used across every society.</p>
+      </div>
+    </div>
+
+    <div class="stat-row">
+      <div class="stat-card"><strong>{{ stats.total_events }}</strong><span>Total events</span></div>
+      <div class="stat-card mint"><strong>{{ stats.total_registrations }}</strong><span>Registrations</span></div>
+      <div class="stat-card coral"><strong>{{ stats.total_attendance }}</strong><span>Check-ins</span></div>
+      <div class="stat-card gold"><strong>{{ stats.total_users }}</strong><span>Participants</span></div>
+    </div>
+
+    {% if top_events %}
+    <div class="panel">
+      <h2>Latest events — registrations vs. check-ins</h2>
+      <div class="chart-wrap"><canvas id="topEventsChart"></canvas></div>
+    </div>
+    <div class="panel">
+      <h2>Attendance conversion</h2>
+      <div class="chart-wrap" style="max-width:340px; margin:0 auto;"><canvas id="conversionChart"></canvas></div>
+    </div>
+    {% else %}
+    <div class="empty-state">No events yet — analytics will appear once societies start hosting.</div>
+    {% endif %}
+  </main>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4"></script>
+<script src="{{ url_for('static', filename='js/charts.js') }}"></script>
+<script>
+  {% if top_events %}
+  new Chart(document.getElementById('topEventsChart'), {
+    type: 'bar',
+    data: {
+      labels: {{ top_events | map(attribute='title') | list | tojson }},
+      datasets: [
+        { label: 'Registrations', data: {{ top_events | map(attribute='registrations') | map('length') | list | tojson }}, backgroundColor: '#7c5cff', borderRadius: 8 },
+        { label: 'Checked in', data: {{ top_events | map(attribute='attendance_count') | list | tojson }}, backgroundColor: '#00e5a0', borderRadius: 8 }
+      ]
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      plugins: { legend: { labels: { color: '#a79fd1' } } },
+      scales: {
+        x: { ticks: { color: '#a79fd1' }, grid: { color: 'rgba(167,159,209,0.15)' } },
+        y: { ticks: { color: '#a79fd1' }, grid: { color: 'rgba(167,159,209,0.15)' }, beginAtZero: true }
+      }
+    }
+  });
+  renderDoughnut('conversionChart', ['Checked in', 'No-show'], [{{ stats.total_attendance }}, {{ stats.total_registrations - stats.total_attendance }}]);
+  {% endif %}
+</script>
+{% endblock %}

@@ -1,0 +1,65 @@
+{% extends "base.html" %}
+{% block title %}Create your account — EventSphere{% endblock %}
+{% block extra_css %}<link rel="stylesheet" href="{{ url_for('static', filename='css/auth.css') }}">{% endblock %}
+
+{% block content %}
+<div class="auth-shell">
+  <div class="auth-visual">
+    <h2>Two ways in. Same platform.</h2>
+    <p>Join as a participant to discover and attend events, or register your society to start running them.</p>
+    <div class="auth-quote">
+      <p style="margin:0;">"Registrations, attendance, feedback and certificates — one dashboard instead of five spreadsheets."</p>
+    </div>
+  </div>
+
+  <div class="auth-form-side">
+    <div class="auth-card">
+      <h1>Create your account</h1>
+      <p class="sub">Already have one? <a href="{{ url_for('auth.login') }}">Log in</a>.</p>
+
+      <form method="POST">
+        <div class="role-toggle">
+          <input type="radio" id="role-participant" name="account_type" value="participant" checked>
+          <label for="role-participant">I'm attending events</label>
+          <input type="radio" id="role-organiser" name="account_type" value="organiser">
+          <label for="role-organiser">I run a society</label>
+        </div>
+
+        <div class="form-group">
+          <label for="name">Full name</label>
+          <input type="text" id="name" name="name" required>
+        </div>
+
+        <div class="form-group" id="society-field">
+          <label for="society_name">Society / club name</label>
+          <input type="text" id="society_name" name="society_name" placeholder="e.g. Coding Club">
+        </div>
+
+        <div class="field-row">
+          <div class="form-group">
+            <label for="email">Email</label>
+            <input type="email" id="email" name="email" required>
+          </div>
+          <div class="form-group">
+            <label for="mobile">Mobile number</label>
+            <input type="text" id="mobile" name="mobile" pattern="[0-9]{10}" placeholder="10-digit number">
+          </div>
+        </div>
+
+        <div class="field-row">
+          <div class="form-group">
+            <label for="password">Password</label>
+            <input type="password" id="password" name="password" required minlength="6">
+          </div>
+          <div class="form-group">
+            <label for="confirm_password">Confirm password</label>
+            <input type="password" id="confirm_password" name="confirm_password" required minlength="6">
+          </div>
+        </div>
+
+        <button type="submit" class="btn btn-primary btn-block">Create account</button>
+      </form>
+    </div>
+  </div>
+</div>
+{% endblock %}

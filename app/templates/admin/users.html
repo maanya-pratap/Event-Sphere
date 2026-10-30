@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+{% block title %}Participants — EventSphere Admin{% endblock %}
+{% block extra_css %}<link rel="stylesheet" href="{{ url_for('static', filename='css/dashboard.css') }}">{% endblock %}
+
+{% block content %}
+<div class="dash-shell">
+  {% include "admin/_sidebar.html" %}
+  <main class="dash-main">
+    <div class="dash-header">
+      <div>
+        <h1>Participants</h1>
+        <p>Everyone who's signed up to attend events on EventSphere.</p>
+      </div>
+    </div>
+
+    <div class="panel">
+      {% if users %}
+      <table>
+        <thead><tr><th>Name</th><th>Email</th><th>Mobile</th><th>Registrations</th><th>Joined</th><th>Actions</th></tr></thead>
+        <tbody>
+          {% for u in users %}
+          <tr>
+            <td>{{ u.name }}</td>
+            <td>{{ u.email }}</td>
+            <td>{{ u.mobile or '—' }}</td>
+            <td>{{ u.registrations|length }}</td>
+            <td>{{ u.created_at.strftime('%d %b %Y') }}</td>
+            <td>
+              <form method="POST" action="{{ url_for('admin.delete_user', user_id=u.id) }}"
+                    onsubmit="return confirm('Permanently delete this participant and ALL their data (registrations, certificates, feedback)? This cannot be undone.');">
+                <button class="btn btn-danger btn-sm" type="submit">Delete</button>
+              </form>
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+      {% else %}
+      <div class="empty-state">No participants have registered yet.</div>
+      {% endif %}
+    </div>
+  </main>
+</div>
+{% endblock %}

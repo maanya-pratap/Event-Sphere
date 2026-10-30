@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+{% block title %}Scanner — {{ event.title }}{% endblock %}
+{% block extra_css %}<link rel="stylesheet" href="{{ url_for('static', filename='css/dashboard.css') }}">{% endblock %}
+
+{% block content %}
+<div class="dash-shell">
+  {% include "organiser/_sidebar.html" %}
+  <main class="dash-main">
+    <div class="dash-header"><div><h1>Scan attendees</h1><p>{{ event.title }}</p></div></div>
+
+    <div class="scanner-box">
+      <div id="qr-reader" data-checkin-url="{{ url_for('organiser.check_in', event_id=event.id) }}"></div>
+      <div id="scan-result">Point the camera at a participant's QR pass.</div>
+    </div>
+  </main>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
+<script src="{{ url_for('static', filename='js/scanner.js') }}"></script>
+{% endblock %}

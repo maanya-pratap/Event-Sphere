@@ -1,0 +1,10 @@
+{% extends "base.html" %}
+{% block title %}Page not found — EventSphere{% endblock %}
+{% block content %}
+<div class="container" style="padding:100px 24px; text-align:center;">
+  <div class="hero-kicker">404</div>
+  <h1>This page wandered off somewhere.</h1>
+  <p class="lede" style="margin:0 auto 28px;">The page you're looking for doesn't exist, or it may have moved.</p>
+  <a href="{{ url_for('main.landing') }}" class="btn btn-primary">Back to home</a>
+</div>
+{% endblock %}

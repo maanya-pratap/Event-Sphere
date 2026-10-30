@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+{% block title %}My events — EventSphere{% endblock %}
+{% block extra_css %}<link rel="stylesheet" href="{{ url_for('static', filename='css/dashboard.css') }}">{% endblock %}
+
+{% block content %}
+<div class="dash-shell">
+  {% include "participant/_sidebar.html" %}
+  <main class="dash-main">
+    <div class="dash-header"><div><h1>My events</h1><p>Everything you've registered for.</p></div></div>
+
+    <div class="panel">
+      {% if regs %}
+      <table>
+        <thead><tr><th>Event</th><th>Date</th><th>Status</th><th>Actions</th></tr></thead>
+        <tbody>
+          {% for reg in regs %}
+          <tr>
+            <td>{{ reg.event.title }}</td>
+            <td>{{ reg.event.start_time.strftime('%d %b %Y') }}</td>
+            <td>
+              {% if reg.attendance and reg.attendance.present %}
+                <span class="badge badge-success">Attended</span>
+              {% else %}
+                <span class="badge badge-muted">Registered</span>
+              {% endif %}
+            </td>
+            <td style="display:flex; gap:8px;">
+              <a href="{{ url_for('participant.qr_ticket', reg_id=reg.id) }}" class="btn btn-ghost btn-sm">QR pass</a>
+              {% if reg.attendance and reg.attendance.present %}
+                <a href="{{ url_for('participant.feedback', event_id=reg.event_id) }}" class="btn btn-ghost btn-sm">Feedback</a>
+              {% endif %}
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+      {% else %}
+      <div class="empty-state">You haven't registered for any events yet. <a href="{{ url_for('participant.events') }}">Browse events</a></div>
+      {% endif %}
+    </div>
+  </main>
+</div>
+{% endblock %}

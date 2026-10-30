@@ -1,0 +1,9 @@
+<aside class="sidebar">
+  <div class="role-tag">Admin</div>
+  <a href="{{ url_for('admin.dashboard') }}" class="{{ 'active' if request.endpoint == 'admin.dashboard' }}">🏠 Dashboard</a>
+  <a href="{{ url_for('admin.organisers') }}" class="{{ 'active' if request.endpoint == 'admin.organisers' }}">🛂 Organisers</a>
+  <a href="{{ url_for('admin.events') }}" class="{{ 'active' if request.endpoint == 'admin.events' }}">🎪 Events</a>
+  <a href="{{ url_for('admin.users') }}" class="{{ 'active' if request.endpoint == 'admin.users' }}">🧑‍🎓 Participants</a>
+  <a href="{{ url_for('admin.analytics') }}" class="{{ 'active' if request.endpoint == 'admin.analytics' }}">📊 Analytics</a>
+  <a href="{{ url_for('auth.logout') }}" class="logout-link">↩ Log out</a>
+</aside>

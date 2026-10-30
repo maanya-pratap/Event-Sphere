@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+{% block title %}All events — EventSphere Admin{% endblock %}
+{% block extra_css %}<link rel="stylesheet" href="{{ url_for('static', filename='css/dashboard.css') }}">{% endblock %}
+
+{% block content %}
+<div class="dash-shell">
+  {% include "admin/_sidebar.html" %}
+  <main class="dash-main">
+    <div class="dash-header">
+      <div>
+        <h1>All events</h1>
+        <p>Every event created across every society, in one place.</p>
+      </div>
+    </div>
+
+    <div class="panel">
+      {% if events %}
+      <table>
+        <thead><tr><th>Event</th><th>Organiser</th><th>Category</th><th>Date</th><th>Registered</th><th>Status</th></tr></thead>
+        <tbody>
+          {% for event in events %}
+          <tr>
+            <td>{{ event.title }}</td>
+            <td>{{ event.organiser.society_name or event.organiser.name }}</td>
+            <td>{{ event.category }}</td>
+            <td>{{ event.start_time.strftime('%d %b %Y, %I:%M %p') }}</td>
+            <td>{{ event.registrations|length }} / {{ event.capacity }}</td>
+            <td>
+              <span class="badge badge-{{ 'success' if event.status == 'published' else ('muted' if event.status == 'draft' else 'danger') }}">{{ event.status }}</span>
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+      {% else %}
+      <div class="empty-state">No events have been created yet.</div>
+      {% endif %}
+    </div>
+  </main>
+</div>
+{% endblock %}

@@ -1,0 +1,54 @@
+{% extends "base.html" %}
+{% block title %}Organisers — EventSphere Admin{% endblock %}
+{% block extra_css %}<link rel="stylesheet" href="{{ url_for('static', filename='css/dashboard.css') }}">{% endblock %}
+
+{% block content %}
+<div class="dash-shell">
+  {% include "admin/_sidebar.html" %}
+  <main class="dash-main">
+    <div class="dash-header">
+      <div>
+        <h1>Organiser societies</h1>
+        <p>Approve new societies and manage existing organiser accounts.</p>
+      </div>
+    </div>
+
+    <div class="panel">
+      {% if organisers %}
+      <table>
+        <thead><tr><th>Society</th><th>Contact</th><th>Email</th><th>Mobile</th><th>Status</th><th>Actions</th></tr></thead>
+        <tbody>
+          {% for org in organisers %}
+          <tr>
+            <td>{{ org.society_name or '—' }}</td>
+            <td>{{ org.name }}</td>
+            <td>{{ org.email }}</td>
+            <td>{{ org.mobile or '—' }}</td>
+            <td>
+              {% if org.is_approved %}
+                <span class="badge badge-success">Approved</span>
+              {% else %}
+                <span class="badge badge-warning">Pending</span>
+              {% endif %}
+            </td>
+            <td style="display:flex; gap:8px;">
+              {% if not org.is_approved %}
+              <form method="POST" action="{{ url_for('admin.approve_organiser', user_id=org.id) }}">
+                <button class="btn btn-mint btn-sm" type="submit">Approve</button>
+              </form>
+              {% endif %}
+              <form method="POST" action="{{ url_for('admin.delete_user', user_id=org.id) }}" onsubmit="return confirm('Permanently delete this organiser, ALL their events and every registration, certificate and photo tied to them? This cannot be undone.');">
+                <button class="btn btn-danger btn-sm" type="submit">Delete</button>
+              </form>
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+      {% else %}
+      <div class="empty-state">No organiser accounts yet.</div>
+      {% endif %}
+    </div>
+  </main>
+</div>
+{% endblock %}

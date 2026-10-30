@@ -1,0 +1,9 @@
+<aside class="sidebar">
+  <div class="role-tag">Participant</div>
+  <a href="{{ url_for('participant.dashboard') }}" class="{{ 'active' if request.endpoint == 'participant.dashboard' }}">🏠 Dashboard</a>
+  <a href="{{ url_for('participant.events') }}" class="{{ 'active' if request.endpoint == 'participant.events' }}">🔍 Browse events</a>
+  <a href="{{ url_for('participant.my_events') }}" class="{{ 'active' if request.endpoint == 'participant.my_events' }}">🎟️ My events</a>
+  <a href="{{ url_for('participant.certificates') }}" class="{{ 'active' if request.endpoint == 'participant.certificates' }}">📜 Certificates</a>
+  <a href="{{ url_for('participant.profile') }}" class="{{ 'active' if request.endpoint == 'participant.profile' }}">👤 Profile</a>
+  <a href="{{ url_for('auth.logout') }}" class="logout-link">↩ Log out</a>
+</aside>

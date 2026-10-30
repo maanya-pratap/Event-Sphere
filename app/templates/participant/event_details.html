@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+{% block title %}{{ event.title }} — EventSphere{% endblock %}
+{% block extra_css %}<link rel="stylesheet" href="{{ url_for('static', filename='css/dashboard.css') }}">{% endblock %}
+
+{% block content %}
+<div class="dash-shell">
+  {% include "participant/_sidebar.html" %}
+  <main class="dash-main">
+    <div class="panel">
+      <span class="badge badge-muted">{{ event.category }}</span>
+      <h1 style="margin-top:12px;">{{ event.title }}</h1>
+      <p>{{ event.description or "The organiser hasn't added a description yet." }}</p>
+
+      <div class="event-meta" style="margin:20px 0;">
+        <span>📅 {{ event.start_time.strftime('%A, %d %B %Y · %I:%M %p') }}</span>
+        <span>📍 {{ event.venue or "Venue TBA" }}</span>
+        <span>🎟️ {{ event.seats_left }} of {{ event.capacity }} seats left</span>
+        <span>🏛️ Hosted by {{ event.organiser.society_name or event.organiser.name }}</span>
+      </div>
+
+      {% if already_registered %}
+        <a href="{{ url_for('participant.qr_ticket', reg_id=already_registered.id) }}" class="btn btn-mint">View my QR pass</a>
+      {% elif event.seats_left > 0 %}
+        <form method="POST" action="{{ url_for('participant.register_for_event', event_id=event.id) }}">
+          <button type="submit" class="btn btn-primary">Register now</button>
+        </form>
+      {% else %}
+        <button class="btn btn-ghost" disabled>Event is full</button>
+      {% endif %}
+    </div>
+  </main>
+</div>
+{% endblock %}

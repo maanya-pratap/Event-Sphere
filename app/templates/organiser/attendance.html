@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+{% block title %}Attendance — {{ event.title }}{% endblock %}
+{% block extra_css %}<link rel="stylesheet" href="{{ url_for('static', filename='css/dashboard.css') }}">{% endblock %}
+
+{% block content %}
+<div class="dash-shell">
+  {% include "organiser/_sidebar.html" %}
+  <main class="dash-main">
+    <div class="dash-header"><div><h1>{{ event.title }}</h1><p>Attendance breakdown</p></div></div>
+
+    <div class="stat-row">
+      <div class="stat-card"><strong>{{ stats.registrations }}</strong><span>Registered</span></div>
+      <div class="stat-card mint"><strong>{{ stats.present }}</strong><span>Present</span></div>
+      <div class="stat-card coral"><strong>{{ stats.absent }}</strong><span>Absent</span></div>
+      <div class="stat-card gold"><strong>{{ stats.avg_rating or "—" }}</strong><span>Avg. rating ({{ stats.feedback_count }})</span></div>
+    </div>
+
+    <div class="panel">
+      <h2>Present vs. absent</h2>
+      <div class="chart-wrap"><canvas id="attendanceChart"></canvas></div>
+    </div>
+  </main>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4"></script>
+<script src="{{ url_for('static', filename='js/charts.js') }}"></script>
+<script>
+  renderDoughnut('attendanceChart', ['Present', 'Absent'], [{{ stats.present }}, {{ stats.absent }}]);
+</script>
+{% endblock %}

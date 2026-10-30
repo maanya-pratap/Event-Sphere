@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+{% block title %}Organiser dashboard — EventSphere{% endblock %}
+{% block extra_css %}<link rel="stylesheet" href="{{ url_for('static', filename='css/dashboard.css') }}">{% endblock %}
+
+{% block content %}
+<div class="dash-shell">
+  {% include "organiser/_sidebar.html" %}
+  <main class="dash-main">
+    <div class="dash-header">
+      <div>
+        <h1>{{ current_user.society_name or current_user.name }}</h1>
+        <p>Here's how your events are doing.</p>
+      </div>
+      <a href="{{ url_for('organiser.create_event') }}" class="btn btn-primary">+ New event</a>
+    </div>
+
+    <div class="stat-row">
+      <div class="stat-card"><strong>{{ stats.event_count }}</strong><span>Events hosted</span></div>
+      <div class="stat-card mint"><strong>{{ stats.total_registrations }}</strong><span>Total registrations</span></div>
+      <div class="stat-card coral"><strong>{{ stats.total_attendance }}</strong><span>Total check-ins</span></div>
+      <div class="stat-card gold"><strong>{{ (stats.total_attendance / stats.total_registrations * 100) | round | int if stats.total_registrations else 0 }}%</strong><span>Avg. turnout</span></div>
+    </div>
+
+    <div class="panel">
+      <h2>Your events</h2>
+      {% if stats.events %}
+      <table>
+        <thead><tr><th>Event</th><th>Date</th><th>Registered</th><th>Checked in</th><th>Actions</th></tr></thead>
+        <tbody>
+          {% for event in stats.events %}
+          <tr>
+            <td>{{ event.title }}</td>
+            <td>{{ event.start_time.strftime('%d %b %Y') }}</td>
+            <td>{{ event.registrations|length }}</td>
+            <td>{{ event.attendance_count }}</td>
+            <td style="display:flex; gap:8px;">
+              <a href="{{ url_for('organiser.scanner', event_id=event.id) }}" class="btn btn-mint btn-sm">Scan</a>
+              <a href="{{ url_for('organiser.participants', event_id=event.id) }}" class="btn btn-ghost btn-sm">Participants</a>
+              <a href="{{ url_for('organiser.edit_event', event_id=event.id) }}" class="btn btn-ghost btn-sm">Edit</a>
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+      {% else %}
+      <div class="empty-state">No events yet. <a href="{{ url_for('organiser.create_event') }}">Create your first one</a>.</div>
+      {% endif %}
+    </div>
+  </main>
+</div>
+{% endblock %}
