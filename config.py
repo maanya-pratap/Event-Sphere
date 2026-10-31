@@ -5,10 +5,15 @@ basedir = os.path.abspath(os.path.dirname(__file__))
 
 
 def _database_url():
-    """Render hands out postgres://... but SQLAlchemy needs postgresql://..."""
+    """Force the psycopg2 driver we install, whatever URL style Render gives."""
     url = os.environ.get("DATABASE_URL")
-    if url and url.startswith("postgres://"):
-        url = url.replace("postgres://", "postgresql://", 1)
+    if url:
+        url = url.strip().strip('"').strip("'")
+        for prefix in ("postgres://", "postgresql://",
+                       "postgresql+psycopg://", "postgresql+psycopg2://"):
+            if url.startswith(prefix):
+                url = "postgresql+psycopg2://" + url[len(prefix):]
+                break
     return url or "sqlite:///" + os.path.join(basedir, "instance", "eventsphere.db")
 
 
