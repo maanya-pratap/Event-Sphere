@@ -9,6 +9,9 @@ from app.models import Event, Registration, Feedback
 from app.services.qr_service import generate_qr_for_registration
 from app.services.profile_service import update_profile
 from app.services.ml_service import predict_sentiment
+from app.services.certificate_services import generate_certificate
+
+
 
 participant_bp = Blueprint("participant", __name__, template_folder="../templates/participant")
 
@@ -120,6 +123,10 @@ def certificates():
         .join(Registration.certificate)
         .all()
     )
+    #Rebuild each PDF on view, so it always uses the latest design
+    # and still exists after render clears its temporary disk
+    for reg in regs:
+        generate_certificate(reg)
     return render_template("participant/certificates.html", regs=regs)
 
 
