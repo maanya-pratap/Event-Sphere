@@ -1,8 +1,8 @@
-{% extends "base.html" %}
-{% block title %}All events — EventSphere Admin{% endblock %}
-{% block extra_css %}<link rel="stylesheet" href="{{ url_for('static', filename='css/dashboard.css') }}">{% endblock %}
-
-{% block content %}
+{% extends "base.html" %} {% block title %}All events — EventSphere Admin{%
+endblock %} {% block extra_css %}<link
+  rel="stylesheet"
+  href="{{ url_for('static', filename='css/dashboard.css') }}"
+/>{% endblock %} {% block content %}
 <div class="dash-shell">
   {% include "admin/_sidebar.html" %}
   <main class="dash-main">
@@ -16,17 +16,35 @@
     <div class="panel">
       {% if events %}
       <table>
-        <thead><tr><th>Event</th><th>Organiser</th><th>Category</th><th>Date</th><th>Registered</th><th>Status</th></tr></thead>
+        <thead>
+          <tr>
+            <th>Event</th>
+            <th>Organiser</th>
+            <th>Category</th>
+            <th>Date</th>
+            <th>Registered</th>
+            <th>Status</th>
+          </tr>
+        </thead>
         <tbody>
           {% for event in events %}
           <tr>
-            <td>{{ event.title }}</td>
-            <td>{{ event.organiser.society_name or event.organiser.name }}</td>
-            <td>{{ event.category }}</td>
-            <td>{{ event.start_time.strftime('%d %b %Y, %I:%M %p') }}</td>
-            <td>{{ event.registrations|length }} / {{ event.capacity }}</td>
-            <td>
-              <span class="badge badge-{{ 'success' if event.status == 'published' else ('muted' if event.status == 'draft' else 'danger') }}">{{ event.status }}</span>
+            <td data-label="Event">{{ event.title }}</td>
+            <td data-label="Organiser">
+              {{ event.organiser.society_name or event.organiser.name }}
+            </td>
+            <td data-label="Category">{{ event.category }}</td>
+            <td data-label="Date">
+              {{ event.start_time.strftime('%d %b %Y, %I:%M %p') }}
+            </td>
+            <td data-label="Registered">
+              {{ event.registrations|length }} / {{ event.capacity }}
+            </td>
+            <td data-label="Status">
+              <span
+                class="badge badge-{{ 'success' if event.status == 'published' else ('muted' if event.status == 'draft' else 'danger') }}"
+                >{{ event.status }}</span
+              >
             </td>
           </tr>
           {% endfor %}

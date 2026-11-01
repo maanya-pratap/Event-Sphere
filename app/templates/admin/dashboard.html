@@ -1,8 +1,8 @@
-{% extends "base.html" %}
-{% block title %}Admin dashboard — EventSphere{% endblock %}
-{% block extra_css %}<link rel="stylesheet" href="{{ url_for('static', filename='css/dashboard.css') }}">{% endblock %}
-
-{% block content %}
+{% extends "base.html" %} {% block title %}Admin dashboard — EventSphere{%
+endblock %} {% block extra_css %}<link
+  rel="stylesheet"
+  href="{{ url_for('static', filename='css/dashboard.css') }}"
+/>{% endblock %} {% block content %}
 <div class="dash-shell">
   {% include "admin/_sidebar.html" %}
   <main class="dash-main">
@@ -11,33 +11,71 @@
         <h1>Platform overview</h1>
         <p>Everything happening across EventSphere, at a glance.</p>
       </div>
-      <a href="{{ url_for('admin.organisers') }}" class="btn btn-primary">Review organisers</a>
+      <a href="{{ url_for('admin.organisers') }}" class="btn btn-primary"
+        >Review organisers</a
+      >
     </div>
 
     <div class="stat-row">
-      <div class="stat-card"><strong>{{ stats.total_events }}</strong><span>Total events</span></div>
-      <div class="stat-card mint"><strong>{{ stats.total_registrations }}</strong><span>Registrations</span></div>
-      <div class="stat-card coral"><strong>{{ stats.total_attendance }}</strong><span>Check-ins</span></div>
-      <div class="stat-card gold"><strong>{{ stats.total_organisers }}</strong><span>Organiser accounts</span></div>
+      <div class="stat-card">
+        <strong>{{ stats.total_events }}</strong><span>Total events</span>
+      </div>
+      <div class="stat-card mint">
+        <strong>{{ stats.total_registrations }}</strong
+        ><span>Registrations</span>
+      </div>
+      <div class="stat-card coral">
+        <strong>{{ stats.total_attendance }}</strong><span>Check-ins</span>
+      </div>
+      <div class="stat-card gold">
+        <strong>{{ stats.total_organisers }}</strong
+        ><span>Organiser accounts</span>
+      </div>
     </div>
 
     <div class="panel">
-      <h2>Pending organiser approvals {% if pending %}<span class="badge badge-warning">{{ pending|length }}</span>{% endif %}</h2>
+      <h2>
+        Pending organiser approvals {% if pending %}<span
+          class="badge badge-warning"
+          >{{ pending|length }}</span
+        >{% endif %}
+      </h2>
       {% if pending %}
       <table>
-        <thead><tr><th>Society</th><th>Contact</th><th>Email</th><th>Actions</th></tr></thead>
+        <thead>
+          <tr>
+            <th>Society</th>
+            <th>Contact</th>
+            <th>Email</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
         <tbody>
           {% for org in pending %}
           <tr>
-            <td>{{ org.society_name or org.name }}</td>
-            <td>{{ org.name }}</td>
-            <td>{{ org.email }}</td>
-            <td style="display:flex; gap:8px;">
-              <form method="POST" action="{{ url_for('admin.approve_organiser', user_id=org.id) }}">
-                <button class="btn btn-mint btn-sm" type="submit">Approve</button>
+            <td data-label="Society">{{ org.society_name or org.name }}</td>
+            <td data-label="Contact">{{ org.name }}</td>
+            <td data-label="Email">{{ org.email }}</td>
+            <td
+              data-label="Actions"
+              class="actions"
+              style="display: flex; gap: 8px"
+            >
+              <form
+                method="POST"
+                action="{{ url_for('admin.approve_organiser', user_id=org.id) }}"
+              >
+                <button class="btn btn-mint btn-sm" type="submit">
+                  Approve
+                </button>
               </form>
-              <form method="POST" action="{{ url_for('admin.reject_organiser', user_id=org.id) }}">
-                <button class="btn btn-danger btn-sm" type="submit">Reject</button>
+              <form
+                method="POST"
+                action="{{ url_for('admin.reject_organiser', user_id=org.id) }}"
+              >
+                <button class="btn btn-danger btn-sm" type="submit">
+                  Reject
+                </button>
               </form>
             </td>
           </tr>
@@ -53,14 +91,30 @@
       <h2>Recently created events</h2>
       {% if recent_events %}
       <table>
-        <thead><tr><th>Event</th><th>Organiser</th><th>Date</th><th>Status</th></tr></thead>
+        <thead>
+          <tr>
+            <th>Event</th>
+            <th>Organiser</th>
+            <th>Date</th>
+            <th>Status</th>
+          </tr>
+        </thead>
         <tbody>
           {% for event in recent_events %}
           <tr>
-            <td>{{ event.title }}</td>
-            <td>{{ event.organiser.society_name or event.organiser.name }}</td>
-            <td>{{ event.start_time.strftime('%d %b %Y') }}</td>
-            <td><span class="badge badge-{{ 'success' if event.status == 'published' else 'muted' }}">{{ event.status }}</span></td>
+            <td data-label="Event">{{ event.title }}</td>
+            <td data-label="Organiser">
+              {{ event.organiser.society_name or event.organiser.name }}
+            </td>
+            <td data-label="Date">
+              {{ event.start_time.strftime('%d %b %Y') }}
+            </td>
+            <td data-label="Status">
+              <span
+                class="badge badge-{{ 'success' if event.status == 'published' else 'muted' }}"
+                >{{ event.status }}</span
+              >
+            </td>
           </tr>
           {% endfor %}
         </tbody>

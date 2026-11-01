@@ -1,30 +1,46 @@
-{% extends "base.html" %}
-{% block title %}Participants — {{ event.title }}{% endblock %}
-{% block extra_css %}<link rel="stylesheet" href="{{ url_for('static', filename='css/dashboard.css') }}">{% endblock %}
-
-{% block content %}
+{% extends "base.html" %} {% block title %}Participants — {{ event.title }}{%
+endblock %} {% block extra_css %}<link
+  rel="stylesheet"
+  href="{{ url_for('static', filename='css/dashboard.css') }}"
+/>{% endblock %} {% block content %}
 <div class="dash-shell">
   {% include "organiser/_sidebar.html" %}
   <main class="dash-main">
     <div class="dash-header">
-      <div><h1>{{ event.title }}</h1><p>{{ event.registrations|length }} registered</p></div>
-      <a href="{{ url_for('organiser.scanner', event_id=event.id) }}" class="btn btn-mint">Open scanner</a>
+      <div>
+        <h1>{{ event.title }}</h1>
+        <p>{{ event.registrations|length }} registered</p>
+      </div>
+      <a
+        href="{{ url_for('organiser.scanner', event_id=event.id) }}"
+        class="btn btn-mint"
+        >Open scanner</a
+      >
     </div>
     <div class="panel">
       {% if event.registrations %}
       <table>
-        <thead><tr><th>Name</th><th>Email</th><th>Registered</th><th>Status</th></tr></thead>
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th>Email</th>
+            <th>Registered</th>
+            <th>Status</th>
+          </tr>
+        </thead>
         <tbody>
           {% for reg in event.registrations %}
           <tr>
-            <td>{{ reg.participant.name }}</td>
-            <td>{{ reg.participant.email }}</td>
-            <td>{{ reg.registered_at.strftime('%d %b %Y') }}</td>
-            <td>
+            <td data-label="Name">{{ reg.participant.name }}</td>
+            <td data-label="Email">{{ reg.participant.email }}</td>
+            <td data-label="Registered">
+              {{ reg.registered_at.strftime('%d %b %Y') }}
+            </td>
+            <td data-label="Status">
               {% if reg.attendance and reg.attendance.present %}
-                <span class="badge badge-success">Present</span>
+              <span class="badge badge-success">Present</span>
               {% else %}
-                <span class="badge badge-muted">Not checked in</span>
+              <span class="badge badge-muted">Not checked in</span>
               {% endif %}
             </td>
           </tr>

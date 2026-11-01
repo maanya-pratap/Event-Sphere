@@ -1,24 +1,329 @@
+/* =========================================================
+   EventSphere — phone & tablet layout
+   Loaded last (see base.html) so it can override main.css,
+   dashboard.css and auth.css.
+   ========================================================= */
+
+/* Never allow sideways page scroll on phones */
+html,
+body {
+  max-width: 100%;
+  overflow-x: hidden;
+}
+.hero > *,
+.event-grid > *,
+.feature-grid > *,
+.stat-row > *,
+.field-row > *,
+.dash-shell > *,
+.auth-shell > * {
+  min-width: 0;
+}
+img,
+canvas,
+video {
+  max-width: 100%;
+}
+
+/* Laptops / small screens: keep the hero text off the screen edge */
+@media (max-width: 1228px) {
+  .hero {
+    padding-left: 24px;
+    padding-right: 24px;
+  }
+}
+
 @media (max-width: 1024px) {
-  .feature-grid { grid-template-columns: repeat(2, 1fr); }
-  .event-grid { grid-template-columns: repeat(2, 1fr); }
-  .stat-row { grid-template-columns: repeat(2, 1fr); }
+  .feature-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  .event-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  .stat-row {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 960px) {
+  /* Dashboard: sidebar becomes a wrapped row of buttons above the content */
+  .dash-shell {
+    grid-template-columns: 1fr;
+    min-height: 0;
+    align-content: start;
+  }
+  .sidebar {
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: 8px;
+    overflow: visible;
+    padding: 14px 16px;
+    border-right: none;
+    border-bottom: 1px solid var(--line);
+  }
+  .sidebar a {
+    padding: 8px 14px;
+    font-size: 0.88rem;
+    background: var(--surface);
+    border-radius: 999px;
+  }
+  .sidebar a.active {
+    background: rgba(124, 92, 255, 0.28);
+  }
+  .sidebar .role-tag {
+    display: none;
+  }
+  .sidebar .logout-link {
+    margin-top: 0;
+  }
 }
 
 @media (max-width: 860px) {
-  .hero { grid-template-columns: 1fr; padding-top: 48px; }
-  .hero-visual { max-width: 380px; margin: 0 auto; }
-  .auth-shell { grid-template-columns: 1fr; }
-  .auth-visual { display: none; }
+  .hero {
+    grid-template-columns: 1fr;
+    padding: 48px 24px 60px;
+  }
+  .hero-visual {
+    max-width: 380px;
+    margin: 0 auto;
+    width: 100%;
+  }
+  .auth-shell {
+    grid-template-columns: 1fr;
+    min-height: 0;
+  }
+  .auth-visual {
+    display: none;
+  }
 }
 
 @media (max-width: 720px) {
-  .nav-links { display: none; }
-  .nav-toggle { display: block; }
-  .field-row { grid-template-columns: 1fr; }
+  .container {
+    padding: 0 16px;
+  }
+
+  /* Navbar: brand left, buttons right, menu drops down below */
+  .navbar .container {
+    height: 64px;
+    gap: 8px;
+  }
+  .brand {
+    font-size: 1.1rem;
+    gap: 8px;
+    white-space: nowrap;
+  }
+  .brand-mark {
+    width: 30px;
+    height: 30px;
+  }
+  .nav-actions {
+    gap: 8px;
+  }
+  .nav-actions .btn-sm {
+    padding: 8px 12px;
+    font-size: 0.8rem;
+    white-space: nowrap;
+  }
+  .nav-links {
+    display: none;
+  }
+  .nav-toggle {
+    display: block;
+    padding: 4px 6px;
+  }
+  .nav-links.open {
+    position: absolute;
+    top: 64px;
+    left: 0;
+    right: 0;
+    z-index: 60;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0;
+    background: var(--ink);
+    border-bottom: 1px solid var(--line);
+    padding: 8px 16px 14px;
+  }
+  .nav-links.open li {
+    width: 100%;
+  }
+  .nav-links.open a {
+    display: block;
+    padding: 12px 0;
+  }
+
+  .field-row {
+    grid-template-columns: 1fr;
+  }
+  .hero {
+    padding: 32px 16px 40px;
+    gap: 32px;
+  }
+  .hero h1 {
+    max-width: none;
+  }
+  .hero-actions .btn {
+    flex: 1 1 100%;
+  }
+  .section-head {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  .auth-form-side {
+    padding: 28px 16px;
+  }
+
+  /* Bigger touch targets, and 16px text so iPhones don't zoom into inputs */
+  .btn {
+    min-height: 44px;
+  }
+  .btn-sm {
+    min-height: 40px;
+  }
+  input[type="text"],
+  input[type="email"],
+  input[type="password"],
+  input[type="number"],
+  input[type="datetime-local"],
+  input[type="search"],
+  select,
+  textarea {
+    font-size: 16px;
+  }
+
+  .dash-main {
+    padding: 20px 16px;
+  }
+  .dash-header h1 {
+    font-size: 1.45rem;
+  }
+  .panel {
+    padding: 18px 16px;
+  }
+  .qr-ticket-wrap {
+    padding: 22px 16px;
+  }
+
+  /* Flash messages: full width instead of a floating 260px box */
+  .flash-stack {
+    left: 16px;
+    right: 16px;
+    top: 76px;
+  }
+  .flash {
+    min-width: 0;
+  }
+
+  /* Search / filter rows */
+  form[method="GET"] {
+    flex-wrap: wrap;
+  }
+  form[method="GET"] input,
+  form[method="GET"] select {
+    width: 100% !important;
+    flex: 1 1 100%;
+    min-width: 0;
+  }
+
+  /* Tables turn into stacked cards, so every column and every button stays reachable */
+  table,
+  thead,
+  tbody,
+  tr,
+  td {
+    display: block;
+    width: 100%;
+  }
+  thead {
+    position: absolute;
+    left: -9999px;
+    top: -9999px;
+  }
+  tr {
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    padding: 10px 14px;
+    margin-bottom: 12px;
+    background: rgba(255, 255, 255, 0.02);
+  }
+  td {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 14px;
+    padding: 7px 0;
+    border: 0;
+    text-align: right;
+    overflow-wrap: anywhere;
+    word-break: break-word;
+  }
+  td::before {
+    content: attr(data-label);
+    flex: 0 0 36%;
+    text-align: left;
+    color: var(--text-muted);
+    font-size: 0.72rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+  }
+  td.actions,
+  td[data-label="Actions"] {
+    display: flex !important;
+    flex-wrap: wrap;
+    justify-content: flex-start;
+    gap: 8px;
+    padding-top: 12px;
+    margin-top: 6px;
+    border-top: 1px solid var(--line);
+  }
+  td.actions::before,
+  td[data-label="Actions"]::before {
+    display: none;
+  }
+  td.actions form,
+  td[data-label="Actions"] form {
+    margin: 0;
+  }
+
+  /* Scanner and charts */
+  .scanner-box {
+    max-width: 100%;
+  }
+  #scan-result {
+    font-size: 0.95rem;
+  }
+  .chart-wrap {
+    height: 240px;
+  }
 }
 
 @media (max-width: 600px) {
-  .feature-grid, .event-grid, .stat-row { grid-template-columns: 1fr; }
-  .hero-stats { flex-wrap: wrap; gap: 20px; }
-  footer .container { flex-direction: column; gap: 10px; text-align: center; }
+  .feature-grid,
+  .event-grid,
+  .stat-row {
+    grid-template-columns: 1fr;
+  }
+  .hero-stats {
+    flex-wrap: wrap;
+    gap: 20px;
+  }
+  footer .container {
+    flex-direction: column;
+    gap: 10px;
+    text-align: center;
+  }
+}
+
+@media (max-width: 360px) {
+  .brand {
+    font-size: 1rem;
+  }
+  .nav-actions .btn-sm {
+    padding: 7px 10px;
+    font-size: 0.75rem;
+  }
+  .hero h1 {
+    font-size: 2rem;
+  }
 }

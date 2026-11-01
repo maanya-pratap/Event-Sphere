@@ -1,8 +1,8 @@
-{% extends "base.html" %}
-{% block title %}Participants — EventSphere Admin{% endblock %}
-{% block extra_css %}<link rel="stylesheet" href="{{ url_for('static', filename='css/dashboard.css') }}">{% endblock %}
-
-{% block content %}
+{% extends "base.html" %} {% block title %}Participants — EventSphere Admin{%
+endblock %} {% block extra_css %}<link
+  rel="stylesheet"
+  href="{{ url_for('static', filename='css/dashboard.css') }}"
+/>{% endblock %} {% block content %}
 <div class="dash-shell">
   {% include "admin/_sidebar.html" %}
   <main class="dash-main">
@@ -16,19 +16,37 @@
     <div class="panel">
       {% if users %}
       <table>
-        <thead><tr><th>Name</th><th>Email</th><th>Mobile</th><th>Registrations</th><th>Joined</th><th>Actions</th></tr></thead>
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th>Email</th>
+            <th>Mobile</th>
+            <th>Registrations</th>
+            <th>Joined</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
         <tbody>
           {% for u in users %}
           <tr>
-            <td>{{ u.name }}</td>
-            <td>{{ u.email }}</td>
-            <td>{{ u.mobile or '—' }}</td>
-            <td>{{ u.registrations|length }}</td>
-            <td>{{ u.created_at.strftime('%d %b %Y') }}</td>
-            <td>
-              <form method="POST" action="{{ url_for('admin.delete_user', user_id=u.id) }}"
-                    onsubmit="return confirm('Permanently delete this participant and ALL their data (registrations, certificates, feedback)? This cannot be undone.');">
-                <button class="btn btn-danger btn-sm" type="submit">Delete</button>
+            <td data-label="Name">{{ u.name }}</td>
+            <td data-label="Email">{{ u.email }}</td>
+            <td data-label="Mobile">{{ u.mobile or '—' }}</td>
+            <td data-label="Registrations">{{ u.registrations|length }}</td>
+            <td data-label="Joined">{{ u.created_at.strftime('%d %b %Y') }}</td>
+            <td data-label="Actions">
+              <form
+                method="POST"
+                action="{{ url_for('admin.delete_user', user_id=u.id) }}"
+                onsubmit="
+                  return confirm(
+                    'Permanently delete this participant and ALL their data (registrations, certificates, feedback)? This cannot be undone.',
+                  );
+                "
+              >
+                <button class="btn btn-danger btn-sm" type="submit">
+                  Delete
+                </button>
               </form>
             </td>
           </tr>
