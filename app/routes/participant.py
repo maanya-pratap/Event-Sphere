@@ -1,5 +1,6 @@
+import os
 from datetime import datetime
-from flask import Blueprint, render_template, redirect, url_for, flash, request
+from flask import Blueprint, render_template, redirect, url_for, flash, request, current_app
 from flask_login import login_required, current_user
 
 from app.routes import role_required
@@ -40,6 +41,25 @@ def events():
         query = query.filter(Event.title.ilike(f"%{q}%"))
     all_events = query.order_by(Event.start_time.asc()).all()
     return render_template("participant/events.html", events=all_events, q=q)
+
+
+@participant_bp.route("/gallery")
+@role_required("participant")
+def gallery():
+    """Photos uploaded by organisers. Pick an event with ?event_id=..."""
+    events = Event.query.filter_by(status="published").order_by(Event.start_time.desc()).all()
+
+    def photos_for(eid):
+        folder = os.path.join(current_app.config["UPLOAD_FOLDER"], "events", str(eid))
+        return sorted(os.listdir(folder)) if os.path.isdir(folder) else []
+
+    event_id = request.args.get("event_id", type=int)
+    selected = next((e for e in events if e.id == event_id), None)
+    if selected is None:
+        # default to the newest event that actually has photos
+        selected = next((e for e in events if photos_for(e.id)), events[0] if events else None)
+    photos = photos_for(selected.id) if selected else []
+    return render_template("participant/gallery.html", events=events, event=selected, photos=photos)
 
 
 @participant_bp.route("/events/<int:event_id>")
