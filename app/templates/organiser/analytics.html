@@ -35,9 +35,9 @@
       <p>{{ sentiment.total }} feedback comment(s) analysed.</p>
       <div class="chart-wrap" style="max-width:340px; margin:0 auto;"><canvas id="sentimentChart"></canvas></div>
       <div style="display:flex; gap:24px; flex-wrap:wrap; margin-top:16px;">
-        <div><strong style="color:#00e5a0;">Praised for</strong><br>
+        <div><strong style="color:#3F5A12;">Praised for</strong><br>
           {% for word, n in sentiment.keywords_positive %}<span class="badge badge-success">{{ word }} · {{ n }}</span> {% else %}<span>—</span>{% endfor %}</div>
-        <div><strong style="color:#ff5d73;">Complaints about</strong><br>
+        <div><strong style="color:#B3261E;">Complaints about</strong><br>
           {% for word, n in sentiment.keywords_negative %}<span class="badge badge-warning">{{ word }} · {{ n }}</span> {% else %}<span>—</span>{% endfor %}</div>
       </div>
       {% else %}
@@ -61,16 +61,16 @@
     data: {
       labels: {{ stats.events | map(attribute='title') | list | tojson }},
       datasets: [
-        { label: 'Registrations', data: {{ stats.events | map(attribute='registrations') | map('length') | list | tojson }}, backgroundColor: '#7c5cff', borderRadius: 8 },
-        { label: 'Checked in', data: {{ stats.events | map(attribute='attendance_count') | list | tojson }}, backgroundColor: '#00e5a0', borderRadius: 8 }
+        { label: 'Registrations', data: {{ stats.events | map(attribute='registrations') | map('length') | list | tojson }}, backgroundColor: '#A8A3EC', borderRadius: 8 },
+        { label: 'Checked in', data: {{ stats.events | map(attribute='attendance_count') | list | tojson }}, backgroundColor: '#2B2620', borderRadius: 8 }
       ]
     },
     options: {
       responsive: true, maintainAspectRatio: false,
-      plugins: { legend: { labels: { color: '#a79fd1' } } },
+      plugins: { legend: { labels: { color: '#5A5143' } } },
       scales: {
-        x: { ticks: { color: '#a79fd1' }, grid: { color: 'rgba(167,159,209,0.15)' } },
-        y: { ticks: { color: '#a79fd1' }, grid: { color: 'rgba(167,159,209,0.15)' }, beginAtZero: true }
+        x: { ticks: { color: '#5A5143' }, grid: { color: 'rgba(20,17,15,0.08)' } },
+        y: { ticks: { color: '#5A5143' }, grid: { color: 'rgba(20,17,15,0.08)' }, beginAtZero: true }
       }
     }
   });
@@ -81,9 +81,9 @@
     type: 'doughnut',
     data: {
       labels: ['Positive', 'Neutral', 'Negative'],
-      datasets: [{ data: [{{ sentiment.counts.positive }}, {{ sentiment.counts.neutral }}, {{ sentiment.counts.negative }}], backgroundColor: ['#00e5a0', '#ffc857', '#ff5d73'] }]
+      datasets: [{ data: [{{ sentiment.counts.positive }}, {{ sentiment.counts.neutral }}, {{ sentiment.counts.negative }}], backgroundColor: ['#A8B97A', '#F8DA6B', '#F28C8C'] }]
     },
-    options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { labels: { color: '#a79fd1' } } } }
+    options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { labels: { color: '#5A5143' } } } }
   });
   {% endif %}
 </script>

@@ -29,7 +29,9 @@ document.addEventListener("DOMContentLoaded", () => {
       showResult("Network error — try again.", false);
     }
 
-    setTimeout(() => { busy = false; }, 1500);
+    setTimeout(() => {
+      busy = false;
+    }, 1500);
   };
 
   function showResult(message, ok, name) {
@@ -39,21 +41,29 @@ document.addEventListener("DOMContentLoaded", () => {
     if (name) {
       const nameEl = document.createElement("div");
       nameEl.textContent = name;
-      nameEl.style.cssText = "font-size:1.6rem; font-weight:800; margin-bottom:4px;";
+      nameEl.style.cssText =
+        "font-size:1.6rem; font-weight:800; margin-bottom:4px;";
       resultEl.appendChild(nameEl);
     }
     const msgEl = document.createElement("div");
-    msgEl.textContent = ok ? "✔ Checked in — confirm this is the person in front of you." : message;
+    msgEl.textContent = ok
+      ? "✔ Checked in — confirm this is the person in front of you."
+      : message;
     resultEl.appendChild(msgEl);
-    resultEl.style.background = ok ? "rgba(0,229,160,0.15)" : "rgba(255,93,115,0.15)";
-    resultEl.style.color = ok ? "#00e5a0" : "#ff5d73";
+    resultEl.style.background = ok ? "#DDEBC0" : "#FBD5D5";
+    resultEl.style.color = ok ? "#3F5A12" : "#9B1C1C";
   }
 
-  scanner.start(
-    { facingMode: "environment" },
-    { fps: 10, qrbox: 240 },
-    onScanSuccess
-  ).catch(() => {
-    showResult("Couldn't access the camera. Check browser permissions.", false);
-  });
+  scanner
+    .start(
+      { facingMode: "environment" },
+      { fps: 10, qrbox: 240 },
+      onScanSuccess,
+    )
+    .catch(() => {
+      showResult(
+        "Couldn't access the camera. Check browser permissions.",
+        false,
+      );
+    });
 });

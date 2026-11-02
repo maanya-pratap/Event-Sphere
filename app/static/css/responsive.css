@@ -68,7 +68,7 @@ video {
     border-radius: 999px;
   }
   .sidebar a.active {
-    background: rgba(124, 92, 255, 0.28);
+    background: var(--lilac);
   }
   .sidebar .role-tag {
     display: none;
@@ -112,7 +112,8 @@ video {
     gap: 8px;
     white-space: nowrap;
   }
-  .brand-mark {
+  .brand-mark,
+  .brand-logo {
     width: 30px;
     height: 30px;
   }
@@ -244,7 +245,7 @@ video {
     border-radius: 14px;
     padding: 10px 14px;
     margin-bottom: 12px;
-    background: rgba(255, 255, 255, 0.02);
+    background: #fff;
   }
   td {
     display: flex;
