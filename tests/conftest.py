@@ -13,6 +13,7 @@ class TestConfig:
     SQLALCHEMY_TRACK_MODIFICATIONS = False
     WTF_CSRF_ENABLED = False
     TESTING = True
+    CAPTCHA_ENABLED = False  # the captcha has its own tests in test_login_security.py
     UPLOAD_FOLDER = "/tmp/eventsphere_test_uploads"
     CERT_FOLDER = "/tmp/eventsphere_test_certs"
 

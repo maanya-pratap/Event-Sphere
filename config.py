@@ -24,4 +24,5 @@ class Config:
     UPLOAD_FOLDER = os.path.join(basedir, "app", "static", "images")
     CERT_FOLDER = os.path.join(basedir, "app", "static", "certifications")
     MAX_CONTENT_LENGTH = 25 * 1024 * 1024  # 25MB per request (phone photos are big)
+    CAPTCHA_ENABLED = True
     PERMANENT_SESSION_LIFETIME = timedelta(days=7)

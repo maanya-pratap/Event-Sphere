@@ -97,3 +97,27 @@
   color: var(--violet-soft);
   font-weight: 600;
 }
+.captcha-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+.captcha-row img {
+  border-radius: 12px;
+  border: 1.5px solid var(--line);
+  background: #fbf4e6;
+}
+.captcha-refresh {
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  border: 1.5px solid var(--line);
+  background: #fff;
+  font-size: 1.3rem;
+  cursor: pointer;
+  color: var(--black);
+}
+.captcha-refresh:hover {
+  background: var(--yellow);
+}

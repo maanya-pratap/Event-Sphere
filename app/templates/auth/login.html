@@ -1,48 +1,124 @@
-{% extends "base.html" %}
-{% block title %}Log in — EventSphere{% endblock %}
-{% block extra_css %}<link rel="stylesheet" href="{{ url_for('static', filename='css/auth.css') }}">{% endblock %}
-
-{% block content %}
+{% extends "base.html" %} {% block title %}Log in — EventSphere{% endblock %} {%
+block extra_css %}<link
+  rel="stylesheet"
+  href="{{ url_for('static', filename='css/auth.css') }}"
+/>{% endblock %} {% block content %}
 <div class="auth-shell">
   <div class="auth-visual">
     <h2>Welcome back to campus life.</h2>
-    <p>Pick up right where you left off — your passes, your certificates, your events.</p>
+    <p>
+      Pick up right where you left off — your passes, your certificates, your
+      events.
+    </p>
     <div class="auth-quote">
-      <p style="margin:0;">"Setting up attendance for our fest used to take a whole evening. Now it's a QR scan."</p>
+      <p style="margin: 0">
+        "Setting up attendance for our fest used to take a whole evening. Now
+        it's a QR scan."
+      </p>
     </div>
   </div>
 
   <div class="auth-form-side">
     <div class="auth-card">
       <h1>Log in</h1>
-      <p class="sub">New here? <a href="{{ url_for('auth.register') }}">Create an account</a> instead.</p>
+      <p class="sub">
+        New here?
+        <a href="{{ url_for('auth.register') }}">Create an account</a> instead.
+      </p>
 
       <form method="POST">
         <div class="form-group">
           <label for="email">Email</label>
-          <input type="email" id="email" name="email" required autofocus>
+          <input
+            type="email"
+            id="email"
+            name="email"
+            value="{{ email_value or '' }}"
+            required
+            autofocus
+          />
         </div>
         <div class="form-group">
           <label for="password">Password</label>
-          <input type="password" id="password" name="password" required>
+          <input type="password" id="password" name="password" required />
         </div>
+        {% if captcha_on %}
+        <div class="form-group captcha-box">
+          <label for="captcha">Type the characters you see</label>
+          <div class="captcha-row">
+            <img
+              id="captcha-img"
+              src="{{ url_for('auth.captcha_image') }}"
+              alt="Captcha image"
+              width="190"
+              height="64"
+            />
+            <button
+              type="button"
+              class="captcha-refresh"
+              id="captcha-refresh"
+              aria-label="Get a new captcha"
+              title="New image"
+            >
+              &#8635;
+            </button>
+          </div>
+          <input
+            type="text"
+            id="captcha"
+            name="captcha"
+            autocomplete="off"
+            autocapitalize="characters"
+            maxlength="8"
+            required
+          />
+        </div>
+        {% endif %}
         <div class="remember-row">
-          <label style="display:flex; align-items:center; gap:8px; margin:0;">
-            <input type="checkbox" name="remember" style="width:auto;"> Remember me
+          <label
+            style="display: flex; align-items: center; gap: 8px; margin: 0"
+          >
+            <input type="checkbox" name="remember" style="width: auto" />
+            Remember me
           </label>
           <a href="{{ url_for('auth.forgot_password') }}">Forgot password?</a>
         </div>
         <button type="submit" class="btn btn-primary btn-block">Log in</button>
       </form>
       {% if unverified_email %}
-      <form method="POST" action="{{ url_for('auth.resend_verification') }}" style="margin-top:1rem">
-        <input type="hidden" name="email" value="{{ unverified_email }}">
-        <button type="submit" class="btn btn-block">Resend verification email</button>
+      <form
+        method="POST"
+        action="{{ url_for('auth.resend_verification') }}"
+        style="margin-top: 1rem"
+      >
+        <input type="hidden" name="email" value="{{ unverified_email }}" />
+        <button type="submit" class="btn btn-block">
+          Resend verification email
+        </button>
       </form>
       {% endif %}
 
-      <div class="auth-foot">Organiser account pending approval? Your admin will confirm it shortly.</div>
+      <div class="auth-foot">
+        Organiser account pending approval? Your admin will confirm it shortly.
+      </div>
     </div>
   </div>
 </div>
+{% endblock %} {% block extra_js %}
+<script>
+  (function () {
+    var img = document.getElementById("captcha-img"),
+      btn = document.getElementById("captcha-refresh");
+    if (img && btn)
+      btn.addEventListener("click", function () {
+        img.src = "{{ url_for('auth.captcha_image') }}?t=" + Date.now();
+        var box = document.getElementById("captcha");
+        if (box) {
+          box.value = "";
+          box.focus();
+        }
+      });
+  })();
+</script>
 {% endblock %}
+

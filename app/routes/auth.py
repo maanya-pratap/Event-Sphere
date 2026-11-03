@@ -1,4 +1,5 @@
-from flask import Blueprint, render_template, redirect, url_for, flash, request
+from flask import Blueprint, render_template, redirect, url_for, flash, request, Response, current_app 
+from app.services.captcha_service import new_captcha_png, check_captcha
 from flask_login import login_user, logout_user, login_required, current_user
 
 from app.extensions import db
@@ -104,20 +105,56 @@ def login():
         password = request.form.get("password", "")
         remember = bool(request.form.get("remember"))
 
+        captcha_on = current_app.config.get("CAPTCHA_ENABLED", True)
+        if captcha_on and not check_captcha(request.form.get("captcha", "")):
+            flash("The captcha text was wrong. Please try again with the new image.", "error")
+            return render_template("auth/login.html", captcha_on=captcha_on, email_value=email)
+
         user = User.query.filter_by(email=email).first()
-        if user is None or not user.check_password(password):
-            flash("That email/password combination doesn't match.", "error")
+        if user is not None and user.is_locked:
+            # Even the right password is refused while the lock lasts
+            flash(f"This account is locked after too many wrong passwords. "
+                  f"Try again in {user.lock_time_left()}, or reset your password by email.", "error")
+        elif user is None or not user.check_password(password):
+            if user is None:
+                flash("That email/password combination doesn't match.", "error")
+            else:
+                just_locked = user.register_failed_attempt()
+                db.session.commit()
+                if just_locked:
+                    flash(f"Too many wrong passwords. This account is now locked for "
+                          f"{user.LOCK_HOURS} hours. You can also reset your password by email.", "error")
+                else:
+                    left = user.MAX_FAILED_ATTEMPTS - user.failed_attempts
+                    flash(f"That email/password combination doesn't match. "
+                          f"{left} attempt{'s' if left != 1 else ''} left before this account is locked "
+                          f"for {user.LOCK_HOURS} hours.", "error")
         elif not user.email_verified:
+            user.clear_failed_attempts()
+            db.session.commit()
             flash("Please verify your email first. Check your inbox for the link.", "info")
-            return render_template("auth/login.html", unverified_email=email)
+            return render_template("auth/login.html", unverified_email=email, captcha_on=captcha_on)
         elif user.role == "organiser" and not user.is_approved:
+            user.clear_failed_attempts()
+            db.session.commit()
             flash("Your society account is awaiting admin approval.", "info")
         else:
+            user.clear_failed_attempts()
+            db.session.commit()
             login_user(user, remember=remember)
             flash(f"Good to see you, {user.name.split(' ')[0]}.", "success")
             return _redirect_for_role(user)
+        return render_template("auth/login.html", captcha_on=captcha_on, email_value=email)
 
-    return render_template("auth/login.html")
+    return render_template("auth/login.html", captcha_on=current_app.config.get("CAPTCHA_ENABLED", True))
+
+
+@auth_bp.route("/captcha.png")
+def captcha_image():
+    resp = Response(new_captcha_png(), mimetype="image/png")
+    resp.headers["Cache-Control"] = "no-store, max-age=0"
+    return resp
+
 
 
 @auth_bp.route("/verify/<token>")
@@ -176,7 +213,8 @@ def reset_password(token):
             flash("Passwords don't match.", "error")
         else:
             user.set_password(password)
-            user.email_verified = True  # they proved they own the inbox
+            user.email_verified = True # they proved they own the inbox
+            user.clear_failed_attempts()  # which also lifts any login lock
             db.session.commit()
             flash("Password changed. Please log in with the new password.", "success")
             return redirect(url_for("auth.login"))

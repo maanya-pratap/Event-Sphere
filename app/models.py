@@ -1,5 +1,5 @@
 import uuid
-from datetime import datetime
+from datetime import datetime, timedelta
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_login import UserMixin
 from app.extensions import db, login_manager
@@ -27,6 +27,10 @@ class User(UserMixin, db.Model):
     email_verified = db.Column(db.Boolean, default=True)
     avatar = db.Column(db.String(255), default="default.png")
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
+        # Login protection: wrong passwords in a row, and when the lock (if any) ends (UTC)
+    failed_attempts = db.Column(db.Integer, nullable=False, default=0, server_default="0")
+    locked_until = db.Column(db.DateTime, nullable=True)
+
 
     # cascade="all, delete-orphan": deleting a User also deletes everything that
     # belongs to them (their events, registrations, feedback) so no orphan rows remain.
@@ -46,6 +50,37 @@ class User(UserMixin, db.Model):
 
     def check_password(self, password):
         return check_password_hash(self.password_hash, password)
+    
+    # ---- brute-force protection -------------------------------------------------
+    MAX_FAILED_ATTEMPTS = 5   # the 5th wrong password locks the account
+    LOCK_HOURS = 5
+
+    @property
+    def is_locked(self):
+        return bool(self.locked_until and self.locked_until > datetime.utcnow())
+
+    def lock_time_left(self):
+        """Human-readable time until the lock ends, e.g. '4 h 59 min'."""
+        if not self.is_locked:
+            return ""
+        minutes = int((self.locked_until - datetime.utcnow()).total_seconds() // 60) + 1
+        hours, mins = divmod(minutes, 60)
+        return f"{hours} h {mins} min" if hours else f"{mins} min"
+
+    def register_failed_attempt(self):
+        """Count a wrong password. Returns True if this attempt locked the account."""
+        if self.locked_until and self.locked_until <= datetime.utcnow():
+            self.failed_attempts = 0      # an old lock has run out, start counting afresh
+            self.locked_until = None
+        self.failed_attempts = (self.failed_attempts or 0) + 1
+        if self.failed_attempts >= self.MAX_FAILED_ATTEMPTS:
+            self.locked_until = datetime.utcnow() + timedelta(hours=self.LOCK_HOURS)
+            return True
+        return False
+
+    def clear_failed_attempts(self):
+        self.failed_attempts = 0
+        self.locked_until = None
 
     @property
     def is_admin(self):

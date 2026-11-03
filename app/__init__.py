@@ -47,10 +47,23 @@ def create_app(config_class=Config):
 
     with app.app_context():
         db.create_all()
+        _ensure_user_columns()
         _ensure_admin()
 
     return app
 
+def _ensure_user_columns():
+    """db.create_all() never adds columns to a table that already exists (like the live
+    Render database), so add the login-lock columns ourselves if they are missing."""
+    from sqlalchemy import inspect, text
+
+    existing = {c["name"] for c in inspect(db.engine).get_columns("users")}
+    with db.engine.begin() as conn:
+        if "failed_attempts" not in existing:
+            conn.execute(text("ALTER TABLE users ADD COLUMN failed_attempts INTEGER NOT NULL DEFAULT 0"))
+        if "locked_until" not in existing:
+            conn.execute(text("ALTER TABLE users ADD COLUMN locked_until TIMESTAMP"))
+            
 
 def _ensure_admin():
     """On a fresh online database there is no shell to run seed.py. If ADMIN_EMAIL and
