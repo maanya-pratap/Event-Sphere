@@ -1,6 +1,6 @@
 # EventSphere
 
-**Live demo:** https://your-render-link.onrender.com
+**Live demo:** https://event-sphere-n3wv./.onrender.com
 
 **Event Management System with QR-Based Attendance & Certification**
 BCA V · CN312 Project (MO 2026) · Guide: Dr. Amrita Priyam
