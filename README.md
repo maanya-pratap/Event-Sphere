@@ -84,9 +84,15 @@ for what's planned across the review cycle.
 | BCA/40084/24 | Astha Kumari |
 | BCA/40072/24 | Shreya S. Xaxa |
 
-##Screenshots
-![create event](create event.png)
-![event gallery](event gallery.png)
-![feedback](feedback.png)
-![participant dashboard](participant dashboard.png)
+## Screenshots
+
+![Create event](create%20event.png)
+
+![Event gallery](event%20gallery.png)
+
+![Feedback](feedback.png)
+
+![Participant dashboard](participant%20dashboard%20.png)
+
+![QR pass](QR-pass%20.jpeg)
 
